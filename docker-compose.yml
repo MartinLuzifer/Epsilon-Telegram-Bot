@@ -1,25 +1,43 @@
 version: '3.1'
 
+networks:
+  epsilon-telegram-bot:
+
 services:
 
   mongo:
     image: mongo
     container_name: Epsilon-telegramBot-mongodb
     restart: always
-    ports:
-      - 27017:27017
+    networks:
+      epsilon-telegram-bot:
+    # ports:
+    #   - "${MONGODB_PORT}:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS}
 
   mongo-express:
     image: mongo-express
-    container_name: Epsilon-mongodb-express
+    container_name: Epsilon-telegramBot-ME
     restart: always
+    networks:
+      epsilon-telegram-bot:
     ports:
-      - 9980:8081
+      - "127.0.0.1:9980:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASS}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGODB_USER}:${MONGODB_PASS}@${MONGODB_ADDR}:${MONGODB_PORT}
       ME_CONFIG_BASICAUTH: false
+
+  epsilon-telegram-bot:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: epsilon-telegram-bot
+    container_name: Epsilon-telegramBot-bot
+    restart: always
+    networks:
+      epsilon-telegram-bot:
+

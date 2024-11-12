@@ -6,7 +6,6 @@ WORKDIR /python/telegramBot
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-
 COPY main.py .
 COPY config.py .
 COPY router.py .

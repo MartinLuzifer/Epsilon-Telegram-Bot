@@ -32,11 +32,8 @@ services:
       ME_CONFIG_BASICAUTH: false
 
   epsilon-telegram-bot:
-    build:
-      dockerfile: Dockerfile
-      context: .
     image: epsilon-telegram-bot
-    container_name: Epsilon-telegramBot-bot
+    container_name: epsilon-telegramBot-bot
     restart: always
     networks:
       epsilon-telegram-bot:

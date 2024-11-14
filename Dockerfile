@@ -9,6 +9,5 @@ RUN pip install -r requirements.txt
 COPY main.py .
 COPY config.py .
 COPY router.py .
-COPY .env .
 
 ENTRYPOINT ["python", "main.py"]

@@ -4,7 +4,10 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
 
+from keyboard import mainKeyboard
+
 mainRouter = Router(name='main_Router')
+baseRouter = Router(name='base_Router')
 
 class FSM1(StatesGroup):
     name = State()
@@ -12,13 +15,24 @@ class FSM1(StatesGroup):
     number = State()
 
 
-@mainRouter.message(CommandStart())
+# ===>>> BASE ROUTES
+@baseRouter.message(CommandStart())
 async def start(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(f'Hello, {html.bold(message.from_user.full_name)}!')
-    await message.answer(f'If you want send tickets enter /ticket:')
+    await message.answer(f'If you want send tickets enter /ticket:', reply_markup=mainKeyboard)
+
+@baseRouter.message(Command('help'))
+async def get_help(message: Message) -> None:
+    answer = '''Как пользоваться ботом:
+    /start - Запустить бота
+    /help  - Вывести справку
+    '''
+    await message.answer(answer)
+# ===>>>
 
 
+# ===>>> MAIN ROUTES
 @mainRouter.message(Command('ticket'))
 async def registration_step_one(message: Message, state: FSMContext) -> None:
     await state.set_state(FSM1.mail)
@@ -37,18 +51,8 @@ async def registration_step_three(message: Message, state: FSMContext) -> None:
     await message.answer(text=f'{data}')
 
 
-@mainRouter.message(Command('help'))
-async def get_help(message: Message) -> None:
-    answer = '''Как пользоваться ботом:
-    /start - Запустить бота
-    /help  - Вывести справку
-    '''
-    await message.answer(answer)
-
+# ===>>> *
 @mainRouter.message()
 async def echo_handler(message: Message) -> None:
-    try:
-        await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.answer("Nice try!")
+    await message.answer('Enter "/help" if you need help')
 

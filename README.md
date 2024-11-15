@@ -11,5 +11,5 @@ sudo usermod -aG docker $USER
 * Running Bot
 
 ```bash
-sh run.sh
+sh bot.sh run
 ```

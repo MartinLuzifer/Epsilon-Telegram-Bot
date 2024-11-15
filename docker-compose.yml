@@ -1,4 +1,4 @@
-version: '3.1'
+# version: '3.1' # https://github.com/docker/compose/issues/12068
 
 networks:
   epsilon-telegram-bot:
